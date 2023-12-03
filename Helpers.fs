@@ -19,3 +19,8 @@ module String =
         let length = Math.Min(length, str.Length - startIndex)
 
         str.Substring(startIndex, length)
+
+module List =
+    let inline product list =
+        list
+        |> List.fold (fun total cur -> total * cur) LanguagePrimitives.GenericOne
