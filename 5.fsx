@@ -56,7 +56,7 @@ let lookupIndex index map =
 
         destination
 
-let fileName = $"5"
+let fileName = $"5-ex"
 
 let fileString = Helpers.readFileString fileName
 
@@ -89,4 +89,43 @@ let lowestLocation = seedNumbers |> List.map getLocation |> List.min
 
 printfn "\n\n\n\n\n\n!!!!!!!!!!!!!!!!"
 printfn $"Part 1: {lowestLocation}"
+printfn "!!!!!!!!!!!!!!!!\n\n\n\n\n\n"
+
+
+let parseSeedNumber (seedNumber, rangeLength) =
+    { Start = seedNumber
+      End = seedNumber + rangeLength }
+
+
+
+let seedNumbers2 =
+    seedNumbers
+    |> List.pairwise
+    |> List.map parseSeedNumber
+
+let lowestLocation2 =
+    seedNumbers2
+    |> List.map (fun (range: Range) ->
+
+        let rec loop curIndex curLowest =
+            if curIndex >= range.End then
+                curLowest
+            else
+                let location = getLocation curIndex
+
+                let newLowest =
+                    if location < curLowest then
+                        location
+                    else
+                        curLowest
+
+                let newIndex = curIndex + 1L
+
+                loop newIndex newLowest
+
+        loop range.Start Int64.MaxValue)
+    |> List.min
+
+printfn "\n\n\n\n\n\n!!!!!!!!!!!!!!!!"
+printfn $"Part 2: {lowestLocation2}"
 printfn "!!!!!!!!!!!!!!!!\n\n\n\n\n\n"
