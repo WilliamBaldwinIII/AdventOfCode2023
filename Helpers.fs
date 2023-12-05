@@ -8,6 +8,10 @@ let readFile file =
     let filePath = $"./inputs/{file}.txt"
     filePath |> File.ReadAllLines |> List.ofArray
 
+let readFileString file =
+    let filePath = $"./inputs/{file}.txt"
+    filePath |> File.ReadAllText
+
 
 module String =
 
