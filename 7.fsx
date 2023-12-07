@@ -1,18 +1,21 @@
 ﻿#load "Helpers.fs"
 
-fsi.ShowProperties <- false
-fsi.ShowIEnumerable <- false
-fsi.ShowDeclarationValues <- false
+//fsi.ShowProperties <- false
+//fsi.ShowIEnumerable <- false
+//fsi.ShowDeclarationValues <- false
 
 open System
 open Helpers
 
 
-let lines = Helpers.readFile "7-ex"
+let lines = Helpers.readFile "7"
+
+lines |> List.iter Console.WriteLine
 
 let faceCardMap =
     [ ('T', 10)
-      ('J', 11)
+      //('J', 11)
+      ('J', 1)
       ('Q', 12)
       ('K', 13)
       ('A', 14) ]
@@ -30,15 +33,24 @@ let parseHand line =
 let getCardValue card =
     faceCardMap
     |> Map.tryFind card
-    |> Option.defaultWith (fun _ -> int card)
+    |> Option.defaultWith (fun _ -> int $"{card}")
 
 let getStrength hand =
+    let jokers, mainHand = hand |> List.ofSeq |> List.partition ((=) 'J')
+    let jokersLength = jokers.Length
+
     let groupNumbers =
-        hand
+        mainHand
         |> Seq.groupBy id
         |> Seq.map (snd >> Seq.length)
         |> Seq.sortDescending
         |> Seq.toList
+
+    let groupNumbers =
+        match groupNumbers with
+        | head :: rest -> head + jokersLength :: rest
+        | [] -> [ jokersLength ]
+
 
     let strength =
         match groupNumbers with
@@ -70,5 +82,5 @@ let allHandsRanked =
     |> List.sum
 
 printfn "\n\n\n\n\n\n!!!!!!!!!!!!!!!!"
-printfn $"Part 1: {allHandsRanked}"
+printfn $"{allHandsRanked}"
 printfn "!!!!!!!!!!!!!!!!\n\n\n\n\n\n"
