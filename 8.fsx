@@ -83,3 +83,45 @@ let count = loop 0 directions "AAA"
 printfn "\n\n\n\n\n\n!!!!!!!!!!!!!!!!"
 printfn $"Part 1: {count}"
 printfn "!!!!!!!!!!!!!!!!\n\n\n\n\n\n"
+
+
+let rec loop2 count curDirections nodeNames =
+    if nodeNames
+       |> List.forall (fun (s: string) -> s.EndsWith 'Z') then
+        count
+    else
+        let nodes = nodeNames |> List.map (fun n -> nodeMap[n])
+
+        let curDirections =
+            match curDirections with
+            | [] -> directions // reset
+            | _ -> curDirections
+
+        let direction, newDirections =
+            match curDirections with
+            | d :: rest -> d, rest
+            | other -> failwith $"Invalid! {other}"
+
+        let newNodeNames =
+            nodes
+            |> List.map (fun node ->
+                match direction with
+                | Left -> node.Left
+                | Right -> node.Right)
+
+        let newCount = count + 1
+
+        loop2 newCount newDirections newNodeNames
+
+let startingNodes =
+    nodeMap
+    |> Map.keys
+    |> Seq.filter (fun k -> k.EndsWith 'A')
+    |> Seq.toList
+
+
+let count2 = loop2 0 directions startingNodes
+
+printfn "\n\n\n\n\n\n!!!!!!!!!!!!!!!!"
+printfn $"Part 2: {count2}"
+printfn "!!!!!!!!!!!!!!!!\n\n\n\n\n\n"
