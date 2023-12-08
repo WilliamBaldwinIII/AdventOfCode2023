@@ -7,7 +7,7 @@ fsi.ShowDeclarationValues <- false
 open System
 open Helpers
 
-let lines = Helpers.readFile "8-ex-2"
+let lines = Helpers.readFile "8"
 
 
 type Direction =
@@ -78,11 +78,11 @@ let rec loop count curDirections nodeName =
 
         loop newCount newDirections newNodeName
 
-let count = loop 0 directions "AAA"
+//let count = loop 0 directions "AAA"
 
-printfn "\n\n\n\n\n\n!!!!!!!!!!!!!!!!"
-printfn $"Part 1: {count}"
-printfn "!!!!!!!!!!!!!!!!\n\n\n\n\n\n"
+//printfn "\n\n\n\n\n\n!!!!!!!!!!!!!!!!"
+//printfn $"Part 1: {count}"
+//printfn "!!!!!!!!!!!!!!!!\n\n\n\n\n\n"
 
 
 let rec loop2 count curDirections nodeNames =
