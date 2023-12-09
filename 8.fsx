@@ -57,8 +57,9 @@ let nodeMap =
     |> Map.ofList
 
 
-let rec loop count curDirections nodeName =
-    if nodeName = "ZZZ" then
+let rec loop count curDirections (nodeName: string) =
+    //if nodeName = "ZZZ" then
+    if nodeName.EndsWith('Z') then
         count
     else
         let node = nodeMap[nodeName]
@@ -74,44 +75,15 @@ let rec loop count curDirections nodeName =
             | Right :: rest -> node.Right, rest
             | other -> failwith $"Invalid! {other}"
 
-        let newCount = count + 1
+        let newCount = count + 1L
 
         loop newCount newDirections newNodeName
 
-//let count = loop 0 directions "AAA"
+let count = loop 0 directions "AAA"
 
-//printfn "\n\n\n\n\n\n!!!!!!!!!!!!!!!!"
-//printfn $"Part 1: {count}"
-//printfn "!!!!!!!!!!!!!!!!\n\n\n\n\n\n"
-
-
-let rec loop2 count curDirections nodeNames =
-    if nodeNames
-       |> List.forall (fun (s: string) -> s.EndsWith 'Z') then
-        count
-    else
-        let nodes = nodeNames |> List.map (fun n -> nodeMap[n])
-
-        let curDirections =
-            match curDirections with
-            | [] -> directions // reset
-            | _ -> curDirections
-
-        let direction, newDirections =
-            match curDirections with
-            | d :: rest -> d, rest
-            | other -> failwith $"Invalid! {other}"
-
-        let newNodeNames =
-            nodes
-            |> List.map (fun node ->
-                match direction with
-                | Left -> node.Left
-                | Right -> node.Right)
-
-        let newCount = count + 1
-
-        loop2 newCount newDirections newNodeNames
+printfn "\n\n\n\n\n\n!!!!!!!!!!!!!!!!"
+printfn $"Part 1: {count}"
+printfn "!!!!!!!!!!!!!!!!\n\n\n\n\n\n"
 
 let startingNodes =
     nodeMap
@@ -120,8 +92,13 @@ let startingNodes =
     |> Seq.toList
 
 
-let count2 = loop2 0 directions startingNodes
+let count2s =
+    startingNodes
+    |> List.map (fun node -> loop 0 directions node)
+
+/// Lowest common multiple much much faster than traversing everything.
+let countProduct = count2s |> List.reduce Math.lcm
 
 printfn "\n\n\n\n\n\n!!!!!!!!!!!!!!!!"
-printfn $"Part 2: {count2}"
+printfn $"Part 2: {countProduct}"
 printfn "!!!!!!!!!!!!!!!!\n\n\n\n\n\n"

@@ -45,3 +45,10 @@ module Array2D =
             |> List.filter (fun (x, y) -> x >= 0 && y >= 0 && x < xLength && y < yLength)
 
         indexes
+
+module Math =
+    /// Greatest common denominator
+    let rec gcd (a: int64) (b: int64) = if b = 0 then a else gcd b (a % b)
+
+    /// Lowest common multiple
+    let lcm a b = (a / gcd a b) * b
