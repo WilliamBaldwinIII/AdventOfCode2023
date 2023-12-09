@@ -8,6 +8,8 @@
   <ItemGroup>
     <Compile Include="FileHelpers.fs" />
     <Compile Include="Helpers.fs" />
+    <Content Include="inputs\9.txt" />
+    <Content Include="inputs\9-ex-1.txt" />
     <Content Include="inputs\8-ex-3.txt" />
     <Content Include="inputs\8-ex-2.txt" />
     <Content Include="inputs\8.txt" />
@@ -27,6 +29,7 @@
     <Content Include="inputs\1-2-ex.txt" />
     <Content Include="inputs\1.txt" />
     <Content Include="inputs\1-ex.txt" />
+    <None Include="9.fsx" />
     <None Include="8.fsx" />
     <None Include="7.fsx" />
     <None Include="6.fsx" />
