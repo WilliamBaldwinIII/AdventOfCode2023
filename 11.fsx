@@ -8,7 +8,7 @@ open System
 open System.Diagnostics
 open Helpers
 
-let lines = Helpers.readFile "11-ex"
+let lines = Helpers.readFile "11"
 
 let grid = array2D lines
 
@@ -86,13 +86,18 @@ let expandedFlattened =
 let allPairs =
     List.allPairs expandedFlattened expandedFlattened
     |> List.filter (fun (a, b) -> a <> b)
-    |> List.map (fun (a, b) -> if a > b then a else b)
+    |> List.map (fun (a, b) -> if a > b then a, b else b, a)
     |> List.distinct
 
-printfn $"%A{allPairs}"
-printfn $""
+//printfn $"%A{allPairs}"
+//printfn $""
 
+let distances =
+    allPairs
+    |> List.map (fun (a, b) -> Math.distance a b)
 
-//printfn "\n\n\n\n\n\n!!!!!!!!!!!!!!!!"
-//printfn $"Part 1: {1}"
-//printfn "!!!!!!!!!!!!!!!!\n\n\n\n\n\n"
+let sum = distances |> List.sum
+
+printfn "\n\n\n\n\n\n!!!!!!!!!!!!!!!!"
+printfn $"Part 1: {sum}"
+printfn "!!!!!!!!!!!!!!!!\n\n\n\n\n\n"

@@ -83,3 +83,5 @@ module Math =
 
     /// Lowest common multiple
     let lcm a b = (a / gcd a b) * b
+
+    let distance (a, b) (c, d) = abs (a - c) + abs (b - d)
