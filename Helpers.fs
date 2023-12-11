@@ -71,6 +71,12 @@ module Array2D =
     // https://stackoverflow.com/a/2369690
     let flatten (A: 'a [,]) = A |> Seq.cast<'a>
 
+    // https://stackoverflow.com/a/2369690
+    let getColumn c (A: 'a [,]) = flatten A[*, c..c] |> Seq.toArray
+
+    // https://stackoverflow.com/a/2369690
+    let getRow r (A: 'a [,]) = flatten A[r..r, *] |> Seq.toArray
+
 module Math =
     /// Greatest common denominator
     let rec gcd (a: int64) (b: int64) = if b = 0 then a else gcd b (a % b)
