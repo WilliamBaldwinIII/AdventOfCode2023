@@ -5,9 +5,10 @@ fsi.ShowIEnumerable <- false
 fsi.ShowDeclarationValues <- false
 
 open System
+open System.Diagnostics
 open Helpers
 
-let lines = Helpers.readFile "10-ex"
+let lines = Helpers.readFile "10"
 
 
 type Direction =
@@ -30,7 +31,7 @@ module Direction =
             failwith
                 $"Invalid direction comparison! Source {(sourceX, sourceY)}; Destination {(destinationX, destinationY)}"
 
-
+[<DebuggerDisplay("{DisplayMe()}")>]
 type Tile =
     | Vertical
     | Horizontal
@@ -40,6 +41,19 @@ type Tile =
     | SouthEast
     | Ground
     | Starting
+
+    member this.DisplayMe() =
+        match this with
+        | Vertical -> "|"
+        | Horizontal -> "-"
+        | NorthEast -> "L"
+        | NorthWest -> "J"
+        | SouthWest -> "7"
+        | SouthEast -> "F"
+        | Ground -> "."
+        | Starting -> "S"
+
+    override this.ToString() = this.DisplayMe()
 
 module Tile =
     let parse =
@@ -53,6 +67,7 @@ module Tile =
         | '.' -> Ground
         | 'S' -> Starting
         | other -> failwith $"Invalid character! {other}"
+
 
     let doConnect currentTile (destinationTile, currentDirection) =
         match currentTile, currentDirection, destinationTile with
@@ -80,23 +95,23 @@ module Tile =
         | SouthEast, East, NorthWest
         | SouthEast, East, Horizontal
         | SouthEast, East, SouthWest -> true
-        | SouthEast, South, SouthWest
+        | SouthEast, South, NorthWest
         | SouthEast, South, Vertical
-        | SouthEast, South, SouthEast -> true
+        | SouthEast, South, NorthEast -> true
 
         | NorthWest, West, NorthEast
         | NorthWest, West, Horizontal
         | NorthWest, West, SouthEast -> true
-        | NorthWest, South, NorthWest
-        | NorthWest, South, Vertical
-        | NorthWest, South, NorthEast -> true
+        | NorthWest, North, SouthWest
+        | NorthWest, North, Vertical
+        | NorthWest, North, SouthEast -> true
 
         | SouthWest, West, NorthEast
         | SouthWest, West, Horizontal
         | SouthWest, West, SouthEast -> true
-        | SouthWest, North, NorthWest
-        | SouthWest, North, Vertical
-        | SouthWest, North, NorthEast -> true
+        | SouthWest, South, NorthWest
+        | SouthWest, South, Vertical
+        | SouthWest, South, NorthEast -> true
 
         | Starting, North, SouthEast
         | Starting, North, Vertical
@@ -113,7 +128,6 @@ module Tile =
         | Starting, East, SouthWest -> true
 
         | _ -> false
-
 
 
 let grid = lines |> array2D |> Array2D.map Tile.parse
@@ -139,6 +153,13 @@ let findConnecting index =
     |> List.map fst
 
 let rec createPipe curIndexes curCount map =
+    //Console.WriteLine(
+    //    $"Current indexes: {curIndexes
+    //                        |> List.map (fun (x, y) -> (x + 1, y + 1), grid[x, y])}"
+    //)
+
+    //Console.WriteLine($"Current indexes: {curIndexes}")
+
     let connecting = curIndexes |> List.collect findConnecting
 
     let filteredIndexes =
@@ -147,21 +168,17 @@ let rec createPipe curIndexes curCount map =
 
     match filteredIndexes with
     | [] ->
-        Console.WriteLine($"No more indexes. Returning. Count: {curCount}")
+        //Console.WriteLine($"No more indexes. Returning. Count: {curCount}")
         map
     | filteredIndexes ->
-        Console.WriteLine($"Still going. Count: {curCount}")
+        //Console.WriteLine($"Still going. Count: {curCount}")
         let newCount = curCount + 1
 
         let map' =
             filteredIndexes
             |> List.fold (fun (curMap: Map<(int * int), int>) b -> curMap.Add(b, newCount)) map
 
-        let newIndexes =
-            filteredIndexes
-            |> List.collect (Array2D.getDirectlySurrounding grid)
-
-        createPipe newIndexes newCount map'
+        createPipe filteredIndexes newCount map'
 
 let pipeMap = createPipe [ startingIndex ] 0 Map.empty
 let pipeMaxDistance = pipeMap |> Map.values |> Seq.max
