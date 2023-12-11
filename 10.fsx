@@ -1,16 +1,13 @@
-﻿open System
-open System.IO
-open System.Diagnostics
+﻿#load "Helpers.fs"
 
+fsi.ShowProperties <- false
+fsi.ShowIEnumerable <- false
+fsi.ShowDeclarationValues <- false
 
+open System
 open Helpers
 
-let fileName = $"10-ex"
-
-let lines =
-    $"..\..\..\inputs\{fileName}.txt"
-    |> File.ReadAllLines
-    |> List.ofArray
+let lines = Helpers.readFile "10-ex"
 
 
 type Direction =
@@ -118,7 +115,6 @@ module Tile =
         | _ -> false
 
 
-//let lines = Helpers.readFile "10-ex-2"
 
 let grid = lines |> array2D |> Array2D.map Tile.parse
 
@@ -161,7 +157,11 @@ let rec createPipe curIndexes curCount map =
             filteredIndexes
             |> List.fold (fun (curMap: Map<(int * int), int>) b -> curMap.Add(b, newCount)) map
 
-        createPipe filteredIndexes newCount map'
+        let newIndexes =
+            filteredIndexes
+            |> List.collect (Array2D.getDirectlySurrounding grid)
+
+        createPipe newIndexes newCount map'
 
 let pipeMap = createPipe [ startingIndex ] 0 Map.empty
 let pipeMaxDistance = pipeMap |> Map.values |> Seq.max

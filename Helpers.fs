@@ -46,6 +46,28 @@ module Array2D =
 
         indexes
 
+    let getDirectlySurrounding arr (x, y) =
+        let surrounding = getSurrounding arr (x, y)
+
+        let indexes =
+            surrounding
+            |> List.filter (fun (x', y') -> x' = x || y = y')
+
+        indexes
+
+    let findIndexOf needle (arr: 'a [,]) =
+        let rec loop x y =
+            if y >= arr.GetLength 1 then
+                None
+            elif x >= arr.GetLength 0 then
+                loop 0 (y + 1)
+            elif arr.[x, y] = needle then
+                Some(x, y)
+            else
+                loop (x + 1) y
+
+        loop 0 0
+
 module Math =
     /// Greatest common denominator
     let rec gcd (a: int64) (b: int64) = if b = 0 then a else gcd b (a % b)
