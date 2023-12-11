@@ -34,48 +34,31 @@ let emptyColumns =
     }
     |> Set.ofSeq
 
-//let expanded = Array2D.init xLength yLength (fun x y ->
-//    if emptyColumns.Contains x then
-//)
-
 printfn $"X: {xLength}"
 printfn $"Y: {yLength}"
 
-//let expanded =
-//    seq {
-//        for y in 0 .. yLength - 1 do
-//            seq {
-//                if emptyRows.Contains y then
-//                    for x in 0 .. xLength + emptyColumns.Count do
-//                        yield '.'
-
-//                    for x in 0 .. xLength - 1 do
-//                        let c = grid[x, y]
-
-//                        if emptyColumns.Contains x then
-//                            yield! $"{c}."
-//                        else
-//                            yield c
-//            }
-//            |> Seq.toList
-//    }
-//    |> Seq.toList
-
-let expanded' =
+let expanded =
     seq {
         for x in 0 .. xLength - 1 do
             seq {
-                yield!
-                    seq {
-                        for y in 0 .. yLength - 1 do
-                            let c = grid[x, y]
+                if emptyRows.Contains x then
+                    yield!
+                        seq {
+                            for x in 0 .. xLength + emptyColumns.Count - 2 do
+                                '.'
+                        }
 
-                            //if emptyColumns.Contains x then
-                            //    yield! $"{c}."
-                            //else
-                            yield c
-                    }
-                    |> Seq.toList
+                else
+                    yield!
+                        seq {
+                            for y in 0 .. yLength - 1 do
+                                let c = grid[x, y]
+
+                                if emptyColumns.Contains y then
+                                    yield! $"{c}."
+                                else
+                                    yield c
+                        }
             }
             |> Seq.toList
     }
@@ -85,7 +68,7 @@ printfn $"Grid:"
 printfn $"%A{grid}"
 printfn $""
 printfn $"Expanded:"
-printfn $"%A{expanded'}"
+printfn $"%A{expanded}"
 printfn $""
 
 
