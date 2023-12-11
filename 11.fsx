@@ -8,7 +8,7 @@ open System
 open System.Diagnostics
 open Helpers
 
-let lines = Helpers.readFile "11"
+let lines = Helpers.readFile "11-ex"
 
 let grid = array2D lines
 
@@ -86,7 +86,7 @@ let expandedFlattened =
 let allPairs =
     List.allPairs expandedFlattened expandedFlattened
     |> List.filter (fun (a, b) -> a <> b)
-    |> List.map (fun (a, b) -> if a > b then a, b else b, a)
+    |> List.map (fun (a, b) -> if a < b then a, b else b, a)
     |> List.distinct
 
 //printfn $"%A{allPairs}"
@@ -100,4 +100,57 @@ let sum = distances |> List.sum
 
 printfn "\n\n\n\n\n\n!!!!!!!!!!!!!!!!"
 printfn $"Part 1: {sum}"
+printfn "!!!!!!!!!!!!!!!!\n\n\n\n\n\n"
+
+
+let grid' =
+    grid
+    |> Array2D.mapi (fun x y v ->
+        if expanded[x, y] = '#' then
+            Some(x, y)
+        else
+            None)
+    |> Array2D.flatten
+    |> Seq.choose id
+    |> Seq.toList
+
+let allPairs2 =
+    List.allPairs grid' grid'
+    |> List.filter (fun (a, b) -> a <> b)
+    |> List.map (fun (a, b) -> if a < b then a, b else b, a)
+    |> List.distinct
+
+
+let multiplier = 1
+
+let distances2 =
+    allPairs2
+    |> List.map (fun (a, b) ->
+        let initialDistance = Math.distance a b
+
+        let ax, ay = a
+        let bx, by = b
+
+        let numEmptyRows =
+            emptyRows
+            |> Seq.filter (fun r -> (r > ay && r < by) || (r > by && r < ay))
+            |> Seq.length
+
+        let numEmptyColumns =
+            emptyColumns
+            |> Seq.filter (fun c -> (c > ax && c < bx) || (c > bx && c < ax))
+            |> Seq.length
+
+        initialDistance
+        + (numEmptyColumns * (multiplier))
+        + (numEmptyRows * (multiplier))
+    //- 3
+
+
+    )
+
+let sum2 = distances2 |> List.sum
+
+printfn "\n\n\n\n\n\n!!!!!!!!!!!!!!!!"
+printfn $"Part 2: {sum2}"
 printfn "!!!!!!!!!!!!!!!!\n\n\n\n\n\n"
