@@ -186,3 +186,18 @@ let pipeMaxDistance = pipeMap |> Map.values |> Seq.max
 printfn "\n\n\n\n\n\n!!!!!!!!!!!!!!!!"
 printfn $"Part 1: {pipeMaxDistance}"
 printfn "!!!!!!!!!!!!!!!!\n\n\n\n\n\n"
+
+
+let nonPipeIndexes =
+    grid
+    |> Array2D.mapi (fun x y _ ->
+        if pipeMap |> Map.containsKey (x, y) then
+
+            Some(x, y)
+        else
+            None)
+    |> Array2D.flatten
+    |> Seq.choose id
+    |> Seq.toList
+
+let indexes = pipeMap

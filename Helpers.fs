@@ -66,7 +66,10 @@ module Array2D =
             else
                 loop (x + 1) y
 
-        loop 0 0
+        loop 0
+
+    // https://stackoverflow.com/a/2369690
+    let flatten (A: 'a [,]) = A |> Seq.cast<'a>
 
 module Math =
     /// Greatest common denominator

@@ -8,6 +8,7 @@
   <ItemGroup>
     <Compile Include="FileHelpers.fs" />
     <Compile Include="Helpers.fs" />
+    <Content Include="inputs\10-ex-3.txt" />
     <Content Include="inputs\10-ex-2.txt" />
     <Content Include="inputs\10.txt" />
     <Content Include="inputs\10-ex.txt" />
