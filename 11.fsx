@@ -37,18 +37,18 @@ let emptyColumns =
 printfn $"X: {xLength}"
 printfn $"Y: {yLength}"
 
-let expanded =
+let expandedList =
     seq {
         for x in 0 .. xLength - 1 do
-            seq {
-                if emptyRows.Contains x then
-                    yield!
-                        seq {
-                            for x in 0 .. xLength + emptyColumns.Count - 2 do
-                                '.'
-                        }
+            if emptyRows.Contains x then
+                yield
+                    seq {
+                        for x in 0 .. xLength + emptyColumns.Count - 2 do
+                            '.'
+                    }
 
-                else
+            yield
+                seq {
                     yield!
                         seq {
                             for y in 0 .. yLength - 1 do
@@ -59,10 +59,10 @@ let expanded =
                                 else
                                     yield c
                         }
-            }
-            |> Seq.toList
+                }
     }
-    |> Seq.toList
+
+let expanded = expandedList |> array2D
 
 printfn $"Grid:"
 printfn $"%A{grid}"
@@ -71,6 +71,26 @@ printfn $"Expanded:"
 printfn $"%A{expanded}"
 printfn $""
 
+
+let expandedFlattened =
+    expanded
+    |> Array2D.mapi (fun x y v ->
+        if expanded[x, y] = '#' then
+            Some(x, y)
+        else
+            None)
+    |> Array2D.flatten
+    |> Seq.choose id
+    |> Seq.toList
+
+let allPairs =
+    List.allPairs expandedFlattened expandedFlattened
+    |> List.filter (fun (a, b) -> a <> b)
+    |> List.map (fun (a, b) -> if a > b then a else b)
+    |> List.distinct
+
+printfn $"%A{allPairs}"
+printfn $""
 
 
 //printfn "\n\n\n\n\n\n!!!!!!!!!!!!!!!!"
