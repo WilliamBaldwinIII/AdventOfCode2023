@@ -8,7 +8,7 @@ open System
 open System.Diagnostics
 open Helpers
 
-let lines = Helpers.readFile "12-ex"
+let lines = Helpers.readFile "12"
 
 type Spot =
     | Spring
@@ -64,8 +64,56 @@ let permutations =
     |> List.map fst
     |> getBooleanPermutations []
 
-let getContiguousGroupsOfSprings (line: string) = ()
+let rec getContiguousGroupsOfSprings
+    (currentContigCount: int option)
+    (contigs: int list)
+    (spots: (int * Spot) list)
+    (map: Map<int, bool>)
+    =
+    match spots with
+    | [] ->
+        let newContigList =
+            match currentContigCount with
+            | Some count -> count :: contigs
+            | None -> contigs
+            |> List.rev
+
+        newContigList
+    | (index, spot) :: rest ->
+        let isSpring =
+            match spot with
+            | Question -> map[index]
+            | Spring -> true
+            | Not -> false
+
+        let newCount, newContigList =
+            match isSpring, currentContigCount with
+            | true, Some count -> Some(count + 1), contigs
+            | true, None -> Some 1, contigs
+            | false, Some count -> None, count :: contigs
+            | false, None -> None, contigs
+
+        getContiguousGroupsOfSprings newCount newContigList rest map
+
+let runLine (spots: (int * Spot) list, contiguous: int list) =
+    let permutations =
+        spots
+        |> List.filter (fun (_, s) -> s = Question)
+        |> List.map fst
+        |> getBooleanPermutations []
+
+    let permutationMaps = permutations |> List.map Map.ofList
+
+    let results =
+        permutationMaps
+        |> List.map (getContiguousGroupsOfSprings None [] spots)
+
+    let matching = results |> List.filter ((=) contiguous)
+
+    matching |> List.length
+
+let fullResults = parsedLines |> List.map runLine
 
 printfn "\n\n\n\n\n\n!!!!!!!!!!!!!!!!"
-printfn $"Part 1: %A{permutations}"
+printfn $"Part 1: %A{fullResults |> List.sum}"
 printfn "!!!!!!!!!!!!!!!!\n\n\n\n\n\n"
