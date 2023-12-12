@@ -81,8 +81,6 @@ let distances multiplier =
         initialDistance
         + (numEmptyColumns * (multiplier - 1L))
         + (numEmptyRows * (multiplier - 1L))
-    //- 3
-
 
     )
 
